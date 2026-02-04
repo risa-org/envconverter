@@ -1,0 +1,16 @@
+{
+  "name": "env-converter",
+  "version": "1.0.0",
+  "description": "Environment variable format converter - browser-based, client-side only",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENV Converter - Transform Environment Variables Between Formats</title>
+  <meta name="description" content="Convert environment variables between .env, Docker Compose, Kubernetes, JSON, and YAML formats. Client-side only, no data uploaded.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="title">ENV<span class="title-accent">CONVERTER</span></h1>
+        <p class="subtitle">Transform environment variables between formats</p>
+      </div>
+      <div class="security-badge">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 1L3 3V7C3 10.5 5.5 13.5 8 15C10.5 13.5 13 10.5 13 7V3L8 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>100% client-side • Nothing uploaded or stored</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="converter-grid">
+        <!-- Input Panel -->
+        <div class="panel input-panel">
+          <div class="panel-header">
+            <label for="input-text" class="panel-label">Input</label>
+            <div class="format-selector">
+              <select id="input-format" class="format-select">
+                <option value="dotenv">.env</option>
+                <option value="docker">Docker Compose</option>
+                <option value="kubernetes">Kubernetes ConfigMap</option>
+                <option value="json">JSON</option>
+                <option value="yaml">YAML</option>
+              </select>
+            </div>
+          </div>
+          <textarea 
+            id="input-text" 
+            class="code-editor" 
+            placeholder="Paste your environment variables here..."
+            spellcheck="false"
+          ></textarea>
+          <div id="input-error" class="error-message"></div>
+        </div>
+
+        <!-- Convert Button -->
+        <div class="convert-section">
+          <button id="convert-btn" class="convert-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 5L20 12L13 19M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Convert</span>
+          </button>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <label for="output-text" class="panel-label">Output</label>
+            <div class="format-selector">
+              <select id="output-format" class="format-select">
+                <option value="dotenv">.env</option>
+                <option value="docker">Docker Compose</option>
+                <option value="kubernetes">Kubernetes ConfigMap</option>
+                <option value="json">JSON</option>
+                <option value="yaml">YAML</option>
+              </select>
+            </div>
+          </div>
+          <textarea 
+            id="output-text" 
+            class="code-editor" 
+            placeholder="Converted output will appear here..."
+            readonly
+            spellcheck="false"
+          ></textarea>
+          <div class="output-actions">
+            <button id="copy-btn" class="action-btn">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 6V2.5C6 2.22386 6.22386 2 6.5 2H15.5C15.7761 2 16 2.22386 16 2.5V11.5C16 11.7761 15.7761 12 15.5 12H12M6 6H2.5C2.22386 6 2 6.22386 2 6.5V15.5C2 15.7761 2.22386 16 2.5 16H11.5C11.7761 16 12 15.7761 12 15.5V12M6 6H11.5C11.7761 6 12 6.22386 12 6.5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Copy</span>
+            </button>
+            <button id="download-btn" class="action-btn">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12L3 13.5C3 14.3284 3.67157 15 4.5 15L13.5 15C14.3284 15 15 14.3284 15 13.5L15 12M9 3V11M9 11L12 8M9 11L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Examples Section -->
+      <div class="examples-section">
+        <h2 class="examples-title">Quick Examples</h2>
+        <div class="examples-grid">
+          <button class="example-card" data-example="dotenv-to-docker">
+            <div class="example-header">
+              <span class="example-from">.env</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="example-to">Docker</span>
+            </div>
+            <p class="example-desc">Convert local .env to Docker Compose format</p>
+          </button>
+          <button class="example-card" data-example="dotenv-to-k8s">
+            <div class="example-header">
+              <span class="example-from">.env</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="example-to">K8s</span>
+            </div>
+            <p class="example-desc">Generate Kubernetes ConfigMap</p>
+          </button>
+          <button class="example-card" data-example="k8s-to-dotenv">
+            <div class="example-header">
+              <span class="example-from">K8s</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="example-to">.env</span>
+            </div>
+            <p class="example-desc">Extract ConfigMap for local testing</p>
+          </button>
+          <button class="example-card" data-example="json-to-dotenv">
+            <div class="example-header">
+              <span class="example-from">JSON</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="example-to">.env</span>
+            </div>
+            <p class="example-desc">Normalize JSON config to .env</p>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Open source • MIT License • <a href="https://github.com" target="_blank" rel="noopener">GitHub</a></p>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
