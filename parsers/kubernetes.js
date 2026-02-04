@@ -3,6 +3,18 @@
 
 import yaml from 'js-yaml';
 
+// Convert environment variable key to Kubernetes-safe key
+function toKubernetesKey(envKey) {
+  // Convert UPPERCASE_SNAKE_CASE to lowercase-kebab-case
+  return envKey.toLowerCase().replace(/_/g, '-');
+}
+
+// Convert Kubernetes key back to environment variable format
+function toEnvKey(k8sKey) {
+  // Convert lowercase-kebab-case to UPPERCASE_SNAKE_CASE
+  return k8sKey.toUpperCase().replace(/-/g, '_');
+}
+
 export function parse(text) {
   try {
     const doc = yaml.load(text);
@@ -23,11 +35,9 @@ export function parse(text) {
     const result = {};
     
     for (const [key, value] of Object.entries(doc.data)) {
-      // Kubernetes ConfigMap keys should be DNS-safe
-      if (!/^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/.test(key)) {
-        throw new Error(`Invalid ConfigMap key "${key}" - must be DNS-safe (lowercase, hyphens, dots)`);
-      }
-      result[key] = String(value);
+      // Convert Kubernetes keys back to env var format
+      const envKey = toEnvKey(key);
+      result[envKey] = String(value);
     }
 
     return result;
@@ -44,11 +54,14 @@ export function stringify(obj) {
   for (const key of keys) {
     const value = obj[key];
     
+    // Convert env var keys to Kubernetes-safe format
+    const k8sKey = toKubernetesKey(key);
+    
     // Use literal block scalar (|) for multiline values
     if (value.includes('\n')) {
-      data[key] = value;
+      data[k8sKey] = value;
     } else {
-      data[key] = value;
+      data[k8sKey] = value;
     }
   }
 
@@ -56,7 +69,8 @@ export function stringify(obj) {
     apiVersion: 'v1',
     kind: 'ConfigMap',
     metadata: {
-      name: 'app-config'
+      name: 'app-config',
+      namespace: 'default'
     },
     data
   };

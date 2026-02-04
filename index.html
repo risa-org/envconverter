@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ENV Converter - Transform Environment Variables Between Formats</title>
-  <meta name="description" content="Convert environment variables between .env, Docker Compose, Kubernetes, JSON, and YAML formats. Client-side only, no data uploaded.">
+  <meta name="description" content="Convert environment variables between .env, Docker Compose, Kubernetes, JSON, YAML, Shell, and Terraform formats. Client-side only, no data uploaded.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,16 +28,25 @@
         <div class="panel input-panel">
           <div class="panel-header">
             <label for="input-text" class="panel-label">Input</label>
-            <div class="format-selector">
+            <div class="format-controls">
+              <button id="auto-detect-btn" class="auto-detect-btn" title="Auto-detect format (Ctrl+D)">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1L9 5L13 6L10 9L11 13L8 11L5 13L6 9L3 6L7 5L8 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Auto-detect
+              </button>
               <select id="input-format" class="format-select">
                 <option value="dotenv">.env</option>
                 <option value="docker">Docker Compose</option>
                 <option value="kubernetes">Kubernetes ConfigMap</option>
                 <option value="json">JSON</option>
                 <option value="yaml">YAML</option>
+                <option value="shell">Shell Export</option>
+                <option value="terraform">Terraform (.tfvars)</option>
               </select>
             </div>
           </div>
+          <div id="format-hint" class="format-hint"></div>
           <textarea 
             id="input-text" 
             class="code-editor" 
@@ -49,12 +58,13 @@
 
         <!-- Convert Button -->
         <div class="convert-section">
-          <button id="convert-btn" class="convert-btn">
+          <button id="convert-btn" class="convert-btn" title="Convert (Ctrl+Enter)">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13 5L20 12L13 19M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>Convert</span>
           </button>
+          <div class="keyboard-hint">Ctrl+Enter</div>
         </div>
 
         <!-- Output Panel -->
@@ -68,6 +78,8 @@
                 <option value="kubernetes">Kubernetes ConfigMap</option>
                 <option value="json">JSON</option>
                 <option value="yaml">YAML</option>
+                <option value="shell">Shell Export</option>
+                <option value="terraform">Terraform (.tfvars)</option>
               </select>
             </div>
           </div>
@@ -78,14 +90,15 @@
             readonly
             spellcheck="false"
           ></textarea>
+          <div id="secret-warning" class="secret-warning"></div>
           <div class="output-actions">
-            <button id="copy-btn" class="action-btn">
+            <button id="copy-btn" class="action-btn" title="Copy to clipboard">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 6V2.5C6 2.22386 6.22386 2 6.5 2H15.5C15.7761 2 16 2.22386 16 2.5V11.5C16 11.7761 15.7761 12 15.5 12H12M6 6H2.5C2.22386 6 2 6.22386 2 6.5V15.5C2 15.7761 2.22386 16 2.5 16H11.5C11.7761 16 12 15.7761 12 15.5V12M6 6H11.5C11.7761 6 12 6.22386 12 6.5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <span>Copy</span>
             </button>
-            <button id="download-btn" class="action-btn">
+            <button id="download-btn" class="action-btn" title="Download file (Ctrl+S)">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 12L3 13.5C3 14.3284 3.67157 15 4.5 15L13.5 15C14.3284 15 15 14.3284 15 13.5L15 12M9 3V11M9 11L12 8M9 11L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -129,16 +142,45 @@
             </div>
             <p class="example-desc">Extract ConfigMap for local testing</p>
           </button>
-          <button class="example-card" data-example="json-to-dotenv">
+          <button class="example-card" data-example="dotenv-to-shell">
             <div class="example-header">
-              <span class="example-from">JSON</span>
+              <span class="example-from">.env</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span class="example-to">.env</span>
+              <span class="example-to">Shell</span>
             </div>
-            <p class="example-desc">Normalize JSON config to .env</p>
+            <p class="example-desc">Generate shell export commands</p>
           </button>
+          <button class="example-card" data-example="dotenv-to-terraform">
+            <div class="example-header">
+              <span class="example-from">.env</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="example-to">Terraform</span>
+            </div>
+            <p class="example-desc">Convert to Terraform variables</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Keyboard Shortcuts Info -->
+      <div class="shortcuts-info">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcuts-grid">
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+            <span>Convert</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd> + <kbd>D</kbd>
+            <span>Auto-detect</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd> + <kbd>S</kbd>
+            <span>Download</span>
+          </div>
         </div>
       </div>
     </main>

@@ -1,12 +1,25 @@
 {
   "name": "env-converter",
   "version": "1.0.0",
-  "description": "Environment variable format converter - browser-based, client-side only",
+  "description": "Convert environment variables between .env, Docker, Kubernetes, Terraform, and more - 100% client-side",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "keywords": [
+    "env",
+    "environment-variables",
+    "dotenv",
+    "docker-compose",
+    "kubernetes",
+    "terraform",
+    "converter",
+    "devops"
+  ],
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
     "vite": "^5.0.0"
   },
