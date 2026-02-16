@@ -105,10 +105,7 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-sm);
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);  /* Normal text color for "ENV" */
   position: relative;
   display: inline-block;
 }
@@ -116,6 +113,10 @@ body {
 .title-accent {
   position: relative;
   display: inline-block;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .title-accent::after {
