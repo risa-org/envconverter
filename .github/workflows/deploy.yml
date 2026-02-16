@@ -18,32 +18,45 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
+      # Ensure npm lock file exists
+      - name: Ensure lock file exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            npm install
+            git add package-lock.json
+            git commit -m "Add lock file for GitHub Actions" || echo "No changes to commit"
+          fi
+
       - name: Install dependencies
         run: npm ci
+        # If your package.json is in a subfolder, uncomment and edit the line below:
+        # working-directory: ./envconverter
 
-      - name: Build
+      - name: Build project
         run: npm run build
+        # working-directory: ./envconverter
 
-      - name: Upload artifact
+      - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+          # If build output is in subfolder: ./envconverter/dist
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
