@@ -25,14 +25,14 @@ export function parse(text) {
     const key = line.slice(0, equalIndex).trim();
     let value = line.slice(equalIndex + 1).trim();
 
-    // Validate key format (should be uppercase with underscores)
+    // Validate key format (letters, digits, and underscores; case-insensitive)
     if (!key) {
       errors.push(`Line ${lineNum}: Empty key name`);
       continue;
     }
 
-    if (!/^[A-Z0-9_]+$/.test(key)) {
-      errors.push(`Line ${lineNum}: Invalid key "${key}" - .env keys should use UPPERCASE_SNAKE_CASE`);
+    if (!/^[A-Za-z0-9_]+$/.test(key)) {
+      errors.push(`Line ${lineNum}: Invalid key "${key}" - .env keys may only contain letters, numbers, and underscores`);
       continue;
     }
 
