@@ -3,8 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ENV Converter - Transform Environment Variables Between Formats</title>
-  <meta name="description" content="Convert environment variables between .env, Docker Compose, Kubernetes, JSON, YAML, Shell, and Terraform formats. Client-side only, no data uploaded.">
+
+  <!-- Google-Cloud-Console -->
+  <meta name="google-site-verification" content="0O24rBwvEdrna5f1nXTMM7BF6jV7VGevPqKKm-7-7Ic" />
+
+  <!-- Primary SEO -->
+  <title>ENV Converter - Convert Environment Variables Between Formats</title>
+  <meta name="description" content="Free online tool to convert environment variables between .env, Docker Compose, Kubernetes ConfigMap, JSON, YAML, Shell export, and Terraform formats. 100% client-side — nothing uploaded or stored.">
+  <meta name="keywords" content="env converter, environment variables, dotenv, docker compose, kubernetes configmap, terraform tfvars, yaml, json, shell export, devops tools, env to docker, env to kubernetes">
+  <meta name="author" content="risa-org">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://risa-org.github.io/envconverter/">
+
+  <!-- Open Graph (Facebook, LinkedIn, Discord, Slack previews) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://risa-org.github.io/envconverter/">
+  <meta property="og:title" content="ENV Converter - Convert Environment Variables Between Formats">
+  <meta property="og:description" content="Free online tool to convert environment variables between .env, Docker Compose, Kubernetes, JSON, YAML, Shell, and Terraform formats. 100% client-side — nothing uploaded or stored.">
+  <meta property="og:site_name" content="ENV Converter">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://risa-org.github.io/envconverter/">
+  <meta name="twitter:title" content="ENV Converter - Convert Environment Variables Between Formats">
+  <meta name="twitter:description" content="Free online tool to convert environment variables between .env, Docker Compose, Kubernetes, JSON, YAML, Shell, and Terraform formats. 100% client-side.">
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ENV Converter",
+    "url": "https://risa-org.github.io/envconverter/",
+    "description": "Free online tool to convert environment variables between .env, Docker Compose, Kubernetes ConfigMap, JSON, YAML, Shell export, and Terraform formats. 100% client-side processing — no data uploaded or stored.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Convert .env to Docker Compose",
+      "Convert .env to Kubernetes ConfigMap",
+      "Convert .env to Terraform .tfvars",
+      "Convert .env to Shell export",
+      "Auto-detect input format",
+      "Secret detection with security warnings",
+      "100% client-side, no data uploaded"
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "risa-org",
+      "url": "https://github.com/risa-org"
+    }
+  }
+  </script>
 
   <link rel="icon" type="image/png" href="/favicon.ico" />
   <link rel="stylesheet" href="style.css">
@@ -54,13 +108,14 @@
             class="code-editor" 
             placeholder="Paste your environment variables here..."
             spellcheck="false"
+            aria-label="Input environment variables"
           ></textarea>
-          <div id="input-error" class="error-message"></div>
+          <div id="input-error" class="error-message" role="alert"></div>
         </div>
 
         <!-- Convert Button -->
         <div class="convert-section">
-          <button id="convert-btn" class="convert-btn" title="Convert (Ctrl+Enter)">
+          <button id="convert-btn" class="convert-btn" title="Convert (Ctrl+Enter)" aria-label="Convert format">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13 5L20 12L13 19M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -91,16 +146,17 @@
             placeholder="Converted output will appear here..."
             readonly
             spellcheck="false"
+            aria-label="Converted output"
           ></textarea>
-          <div id="secret-warning" class="secret-warning"></div>
+          <div id="secret-warning" class="secret-warning" role="alert"></div>
           <div class="output-actions">
-            <button id="copy-btn" class="action-btn" title="Copy to clipboard">
+            <button id="copy-btn" class="action-btn" title="Copy to clipboard" aria-label="Copy output to clipboard">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 6V2.5C6 2.22386 6.22386 2 6.5 2H15.5C15.7761 2 16 2.22386 16 2.5V11.5C16 11.7761 15.7761 12 15.5 12H12M6 6H2.5C2.22386 6 2 6.22386 2 6.5V15.5C2 15.7761 2.22386 16 2.5 16H11.5C11.7761 16 12 15.7761 12 15.5V12M6 6H11.5C11.7761 6 12 6.22386 12 6.5V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <span>Copy</span>
             </button>
-            <button id="download-btn" class="action-btn" title="Download file (Ctrl+S)">
+            <button id="download-btn" class="action-btn" title="Download file (Ctrl+S)" aria-label="Download output as file">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 12L3 13.5C3 14.3284 3.67157 15 4.5 15L13.5 15C14.3284 15 15 14.3284 15 13.5L15 12M9 3V11M9 11L12 8M9 11L6 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -114,7 +170,7 @@
       <div class="examples-section">
         <h2 class="examples-title">Quick Examples</h2>
         <div class="examples-grid">
-          <button class="example-card" data-example="dotenv-to-docker">
+          <button class="example-card" data-example="dotenv-to-docker" aria-label="Convert .env to Docker Compose example">
             <div class="example-header">
               <span class="example-from">.env</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +180,7 @@
             </div>
             <p class="example-desc">Convert local .env to Docker Compose format</p>
           </button>
-          <button class="example-card" data-example="dotenv-to-k8s">
+          <button class="example-card" data-example="dotenv-to-k8s" aria-label="Convert .env to Kubernetes ConfigMap example">
             <div class="example-header">
               <span class="example-from">.env</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +190,7 @@
             </div>
             <p class="example-desc">Generate Kubernetes ConfigMap</p>
           </button>
-          <button class="example-card" data-example="k8s-to-dotenv">
+          <button class="example-card" data-example="k8s-to-dotenv" aria-label="Convert Kubernetes ConfigMap to .env example">
             <div class="example-header">
               <span class="example-from">K8s</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -144,7 +200,7 @@
             </div>
             <p class="example-desc">Extract ConfigMap for local testing</p>
           </button>
-          <button class="example-card" data-example="dotenv-to-shell">
+          <button class="example-card" data-example="dotenv-to-shell" aria-label="Convert .env to Shell export example">
             <div class="example-header">
               <span class="example-from">.env</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -154,7 +210,7 @@
             </div>
             <p class="example-desc">Generate shell export commands</p>
           </button>
-          <button class="example-card" data-example="dotenv-to-terraform">
+          <button class="example-card" data-example="dotenv-to-terraform" aria-label="Convert .env to Terraform variables example">
             <div class="example-header">
               <span class="example-from">.env</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -193,7 +249,7 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="app.js"></script>
 </body>
